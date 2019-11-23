@@ -3,32 +3,31 @@ package ExampleMod;
 import basemod.BaseMod;
 import basemod.interfaces.PostBattleSubscriber;
 import basemod.interfaces.PostDungeonInitializeSubscriber;
-import basemod.interfaces.PostEnergyRechargeSubscriber;
 import basemod.interfaces.PostExhaustSubscriber;
 import basemod.interfaces.OnCardUseSubscriber;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @SpireInitializer
 public class ExampleMod implements PostExhaustSubscriber, 
                                     PostBattleSubscriber, 
                                     PostDungeonInitializeSubscriber,
-        PostEnergyRechargeSubscriber,
         OnCardUseSubscriber {
 
     private int count, totalCount;
-    public static final Logger logger = LogManager.getLogger(SampleMod.class.getName());
+    public static final Logger logger = LogManager.getLogger(ExampleMod.class.getName());
 
     public ExampleMod() {
+        logger.info("the mod is starting!");
         BaseMod.subscribe(this);
     }
 
     public static void initialize() {
-        new ExampleMod();
+        @SuppressWarnings("unused")
+        ExampleMod AIMod = new ExampleMod();
         logger.info("TESTING TESTING TESTING");
     }
 
@@ -57,28 +56,7 @@ public class ExampleMod implements PostExhaustSubscriber,
         logger.info("You played a card!");
     }
 
-    @Override
-    public void receivePostEnergyRecharge() {
-        AbstractRoom currRoom = AbstractDungeon.getCurrRoom();
-        MonsterGroup monsters = AbstractDungeon.getMonsters();
-        AbstractPlayer player = AbstractDungeon.player;
-        // ArrayList<AbstractCard> playable = new ArrayList<>();
-        // for (AbstractCard c : AbstractPlayer.hand.group) {
-        //     if (c.energyOnUse <= AbstractPlayer.energy.energy) {
-        //         playable.add(c.makeSameInstanceOf());
-        //     }
-        // }
-        while (player.hand.canUseAnyCard()) {
-            logger.info(player.hand);
-            AbstractCard c = player.hand.getRandomCard(false);
-            while (c.energyOnUse <= player.energy.energy) {
-                c = player.hand.getRandomCard(false);
-            }
-            player.useCard(c, monsters.getRandomMonster(true), c.energyOnUse);
-        }
-    }
 }
-
 // public class PlayRandom extends ConsoleCommand {
 //     public PlayRandom() {
 //         maxExtraTokens = 0;
