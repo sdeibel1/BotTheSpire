@@ -16,7 +16,9 @@ import javassist.CtBehavior;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SpirePatch(
   clz= GameActionManager.class,
@@ -31,33 +33,61 @@ public class OnPlayerControlHook {
     localvars={}
   )
   public static void Insert(GameActionManager __instance) {
-    AbstractRoom currRoom = AbstractDungeon.getCurrRoom();
-    MonsterGroup monsters = AbstractDungeon.getMonsters();
-    AbstractPlayer player = AbstractDungeon.player;
-    logger.info(player);
-    logger.info(monsters);
-    // ArrayList<AbstractCard> playable = new ArrayList<>();
-    // for (AbstractCard c : AbstractPlayer.hand.group) {
-    //     if (c.energyOnUse <= AbstractPlayer.energy.energy) {
-    //         playable.add(c.makeSameInstanceOf());
-    //     }
-    // }
-    if (player.hand.canUseAnyCard()) {
-        logger.info(player.hand);
-        AbstractCard c = player.hand.getRandomCard(false);
-        logger.info(c);
-        logger.info(player.energy);
-        logger.info(player.energy.energy);
-        AbstractMonster randMonster = monsters.getRandomMonster(true);
-        logger.info(c.energyOnUse);
-        player.useCard(c, randMonster, c.energyOnUse);
+      AbstractRoom currRoom = AbstractDungeon.getCurrRoom();
+      MonsterGroup monsters = AbstractDungeon.getMonsters();
+      AbstractPlayer player = AbstractDungeon.player;
+      logger.info(player);
+      logger.info(monsters);
 
-//        AbstractCard c = player.hand.getRandomCard(false);
-//        while (c.energyOnUse <= player.energy.energy) {
-//            c = player.hand.getRandomCard(false);
-//        }
-//        player.useCard(c, monsters.getRandomMonster(true), c.energyOnUse);
-    }
+      int intentDmg = -1 * player.currentBlock;
+      for (AbstractMonster monster : monsters.monsters) {
+//          if (monster.intent == AbstractMonster.Intent.ATTACK ||
+//                  monster.intent == AbstractMonster.Intent.ATTACK_BUFF ||
+//                  monster.intent == AbstractMonster.Intent.ATTACK_DEFEND) {
+              intentDmg += monster.getIntentDmg();
+//          }
+      }
+      logger.info("Intent damage is: " + intentDmg);
+
+      if (player.hand.canUseAnyCard()) {
+          List<AbstractCard> playable = player.hand.group
+                  .stream().filter(c -> c.cost <= player.energy.energy)
+                  .collect(Collectors.toList());
+          AbstractCard cardToUse;
+          if (intentDmg <= 3) {
+              cardToUse = playable.stream().max(Comparator.comparingInt(c -> c.damage)).get();
+          } else {
+              cardToUse = playable.stream().max(Comparator.comparingInt(c -> c.block)).get();
+          }
+          logger.info("Card to use is: " + cardToUse.name + " with post-use damage intent of " + intentDmg);
+          logger.info("This card has damage " + cardToUse.damage + " and block " + cardToUse.block);
+//          for (AbstractCard card : player.hand.group) {
+//              if (intentDmg <= 3) {
+//              }
+//              if (card.block > 0 && card.block <= intentDmg && card.cost <= player.energy.energy) {
+//                  intentDmg -= card.block;
+//              }
+//          }
+          AbstractMonster lowestMonster = monsters.monsters.stream().min(Comparator.comparingInt(m -> m.currentHealth)).get();
+          player.useCard(cardToUse, lowestMonster, cardToUse.cost);
+      }
+
+//      if (player.hand.canUseAnyCard()) {
+//          AbstractMonster lowestMonster = monsters.monsters.stream().min((m1, m2) -> Integer.compare(m1.currentHealth, m2.currentHealth)).get();
+//          for (AbstractCard card : player.hand.group) {
+//              if (card.block > 0 && card.block <= intentDmg && card.cost <= player.energy.energy) {
+//                  player.useCard(card, Collections.min(monsters.monsters, AbstractMonster::currentHealth) card.cost);
+//              }
+//          }
+//          logger.info(player.hand);
+//          AbstractCard c = player.hand.getRandomCard(false);
+//          logger.info(c);
+//          logger.info(player.energy);
+//          logger.info(player.energy.energy);
+//          AbstractMonster randMonster = monsters.getRandomMonster(true);
+//          logger.info(c.energyOnUse);
+//          player.useCard(c, randMonster, c.energyOnUse);
+//      }
   }
 
   // ModTheSpire searches for a nested class that extends SpireInsertLocator
