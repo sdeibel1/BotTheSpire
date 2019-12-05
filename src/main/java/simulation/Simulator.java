@@ -11,7 +11,10 @@ import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.omg.CORBA.OBJ_ADAPTER;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +26,12 @@ public class Simulator {
     public MonsterGroup monsters;
     public static final Logger logger = LogManager.getLogger(ExampleMod.class.getName());
     public static final GameActionManager originalActionStack = AbstractDungeon.actionManager;
+    public static GameActionManager actionManager = new GameActionManager();
 
 
     public Simulator(HashMap<String, Object> gameState) {
+
+
         this.player = (AbstractPlayer) gameState.get("player");
         this.hand = (CardGroup) gameState.get("hand");
         this.monsters = (MonsterGroup) gameState.get("monsters");
@@ -36,8 +42,8 @@ public class Simulator {
         player.useCard(card, target, card.cost);
         HashMap<String, Object> newState = new HashMap<String, Object>();
         newState.put("player", player);
-        newState.put("hand", )
-        newState.put(,)
+//        newState.put("hand", )
+        return new HashMap<String, Object>();
     }
 
 
@@ -45,10 +51,9 @@ public class Simulator {
     // Begins at the beginning of player's turn and returns a new game state at the
     // beginning of the start of the player's next turn (player makes one turn, monsters make one turn).
     private HashMap<String, Object> stepSimulation(HashMap<String, Object> oldState, AbstractCard cardToPlay) {
-        player.useCard(cardToPlay);
+//        player.useCard(cardToPlay);
 
         return new HashMap<String, Object>();
     }
 
-    public saveState
 }

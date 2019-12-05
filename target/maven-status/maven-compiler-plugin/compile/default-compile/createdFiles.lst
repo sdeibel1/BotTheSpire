@@ -1,3 +1,13 @@
-ExampleMod\ExampleMod.class
+simulation\Simulator.class
+simulation\monsters\AbstractMonster.class
+simulation\actions\DamageAction.class
+simulation\ActionSimulator.class
 patches\OnPlayerControlHook.class
+simulation\StateTree.class
+simulation\SimCard.class
+simulation\monsters\SimLouseNormal.class
+ExampleMod\ExampleMod.class
+simulation\info\IntentInfo$Intent.class
+simulation\actions\AbstractAction.class
+simulation\info\IntentInfo.class
 patches\OnPlayerControlHook$Locator.class
