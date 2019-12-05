@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Simulator {
-    public AbstractPlayer player;
+    public static AbstractEntity player;
     public CardGroup hand;
     public MonsterGroup monsters;
     public static final Logger logger = LogManager.getLogger(ExampleMod.class.getName());

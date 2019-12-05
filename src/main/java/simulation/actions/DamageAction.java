@@ -5,14 +5,15 @@ import simulation.monsters.AbstractMonster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DamageAction extends AbstractAction{
-    private ArrayList<AbstractEntity> targets;
+    private List<AbstractEntity> targets;
     private AbstractEntity source;
     public int damage;
     public int multi = 1;
 
-    public DamageAction(int damage, int multi, AbstractEntity source, ArrayList<AbstractEntity> targets) {
+    public DamageAction(int damage, int multi, AbstractEntity source, List<AbstractEntity> targets) {
         this.damage = damage;
         this.targets = targets;
         this.multi = multi;
